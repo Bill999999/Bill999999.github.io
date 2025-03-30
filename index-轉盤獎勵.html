@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>每月獎勵轉盤</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; background: #f2f2f2; }
+    #reward-box { font-size: 24px; margin-top: 30px; padding: 20px; border: 2px dashed #aaa; background: #fff; border-radius: 10px; min-height: 60px; }
+    button { padding: 12px 24px; font-size: 18px; border: none; border-radius: 8px; background-color: #4CAF50; color: white; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+  </style>
+</head>
+<body>
+  <h1>🎉 每月獎勵轉盤</h1>
+  <p>達成目標後，來抽一個當月的特別獎勵！</p>
+  <button onclick="spinReward()">抽獎！</button>
+  <div id="reward-box"></div>
+
+  <script>
+    const rewards = [
+      "訂一個日式甜點套餐 🍡",
+      "買一本想看的書 📘",
+      "來場一人電影之旅 🎬",
+      "升級語言學習APP 📱",
+      "點一杯星巴克+放空30分鐘 ☕",
+      "買一件拍片用小配件 🎥",
+      "安排一次近郊一日輕旅行 🏞",
+      "請自己吃一餐無壓力高級料理 🍽",
+      "買張按摩券 or SPA放鬆 🧖",
+      "錄一段給未來自己的打氣影片 🎤",
+      "給自己一天不上社群的安靜日 📵",
+      "寫封信寄給一位啟發你的人 ✉️"
+    ];
+
+    function spinReward() {
+      const box = document.getElementById('reward-box');
+      box.textContent = "抽獎中... 🎲";
+      setTimeout(() => {
+        const selected = rewards[Math.floor(Math.random() * rewards.length)];
+        box.textContent = `🎁 你抽到的獎勵是：${selected}`;
+      }, 1000);
+    }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1477776427047351"
+  crossorigin="anonymous"></script>
+</body>
+</html>
