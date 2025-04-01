@@ -32,11 +32,10 @@
   </div>
 
   <script>
-    // 替換為你的 firebaseConfig
     const firebaseConfig = {
-        apiKey: "AIzaSyBGDBoLgdPyMaRWsMxz9NgLZbtPKszZbPU",
-        authDomain: "bill999999-2e3b2.firebaseapp.com",
-        projectId: "bill999999-2e3b2",
+      apiKey: "AIzaSyBGDBoLgdPyMaRWsMxz9NgLZbtPKszZbPU",
+      authDomain: "bill999999-2e3b2.firebaseapp.com",
+      projectId: "bill999999-2e3b2",
     };
 
     firebase.initializeApp(firebaseConfig);
@@ -45,6 +44,7 @@
 
     const adminEmail = "satb03@gmail.com";
 
+    // 登入身分檢查
     auth.onAuthStateChanged(user => {
       if (user && user.email === adminEmail) {
         document.getElementById('login').style.display = 'none';
@@ -57,15 +57,18 @@
       }
     });
 
+    // 改為 redirect 版登入
     function signIn() {
       const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider);
+      auth.signInWithRedirect(provider);
     }
 
+    // 登出
     function signOut() {
       auth.signOut();
     }
 
+    // 發表文章
     function submitPost() {
       const title = document.getElementById('title').value.trim();
       const content = document.getElementById('content').value.trim();
@@ -84,6 +87,15 @@
         alert("❌ 發表失敗：" + err.message);
       });
     }
+
+    // 登入後導回處理
+    auth.getRedirectResult().then(result => {
+      if (result.user) {
+        console.log('登入成功：', result.user.email);
+      }
+    }).catch(error => {
+      console.error('登入錯誤：', error.message);
+    });
   </script>
 </body>
 </html>
