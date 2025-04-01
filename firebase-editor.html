@@ -44,20 +44,27 @@
 
     const adminEmail = "satb03@gmail.com";
 
-    // 登入身分檢查
-    auth.onAuthStateChanged(user => {
+    function showEditor(user) {
       if (user && user.email === adminEmail) {
         document.getElementById('login').style.display = 'none';
         document.getElementById('editor').style.display = 'block';
         document.getElementById('logoutBtn').style.display = 'inline-block';
         document.getElementById('userEmail').textContent = user.email;
-      } else {
-        document.getElementById('login').style.display = 'block';
-        document.getElementById('editor').style.display = 'none';
       }
+    }
+
+    // 處理登入結果後立即顯示編輯器
+    auth.getRedirectResult().then(result => {
+      if (result.user) {
+        showEditor(result.user);
+      } else if (auth.currentUser) {
+        showEditor(auth.currentUser);
+      }
+    }).catch(error => {
+      console.error('登入錯誤：', error.message);
     });
 
-    // 改為 redirect 版登入
+    // 登入按鈕
     function signIn() {
       const provider = new firebase.auth.GoogleAuthProvider();
       auth.signInWithRedirect(provider);
@@ -65,10 +72,12 @@
 
     // 登出
     function signOut() {
-      auth.signOut();
+      auth.signOut().then(() => {
+        location.reload();
+      });
     }
 
-    // 發表文章
+    // 發文
     function submitPost() {
       const title = document.getElementById('title').value.trim();
       const content = document.getElementById('content').value.trim();
@@ -87,15 +96,6 @@
         alert("❌ 發表失敗：" + err.message);
       });
     }
-
-    // 登入後導回處理
-    auth.getRedirectResult().then(result => {
-      if (result.user) {
-        console.log('登入成功：', result.user.email);
-      }
-    }).catch(error => {
-      console.error('登入錯誤：', error.message);
-    });
   </script>
 </body>
 </html>
