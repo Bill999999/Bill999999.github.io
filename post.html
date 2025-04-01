@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>文章內容｜NCU Blog</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; margin: 0; padding: 0; }
+    main { max-width: 800px; margin: 40px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    h1 { color: #2e7d32; }
+    .meta { font-size: 14px; color: #666; margin-bottom: 20px; }
+    footer { text-align: center; font-size: 14px; margin-top: 40px; color: #888; }
+    a { color: #2e7d32; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="post">
+      <p>載入文章中...</p>
+    </div>
+    <p><a href="index.html">← 回首頁</a></p>
+  </main>
+
+  <footer>
+    本站由 @Billin888 維運｜查看我的
+    <a href="https://orcid.org/0000-0003-3299-1809" target="_blank">ORCID</a>｜
+    <a href="https://www.youtube.com/@Billin888" target="_blank">YouTube 頻道</a>
+  </footer>
+
+  <script>
+    // 替換為你的 firebaseConfig
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const params = new URLSearchParams(location.search);
+    const postId = params.get("id");
+    const postDiv = document.getElementById("post");
+
+    if (!postId) {
+      postDiv.innerHTML = "<p>❌ 無效文章 ID</p>";
+    } else {
+      const postRef = db.collection("posts").doc(postId);
+
+      postRef.get().then(doc => {
+        if (!doc.exists) {
+          postDiv.innerHTML = "<p>找不到這篇文章。</p>";
+          return;
+        }
+        const data = doc.data();
+        const date = data.createdAt?.toDate().toLocaleDateString() ?? "--";
+        postDiv.innerHTML = `
+          <h1>${data.title}</h1>
+          <div class="meta">📅 ${date}｜👁️ ${data.views ?? 0} 次瀏覽</div>
+          <div class="content">${data.content.replace(/\n/g, '<br>')}</div>
+        `;
+        postRef.update({ views: firebase.firestore.FieldValue.increment(1) });
+      }).catch(err => {
+        postDiv.innerHTML = `<p>載入錯誤：${err.message}</p>`;
+      });
+    }
+  </script>
+</body>
+</html>
