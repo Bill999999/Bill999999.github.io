@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>每日中央大學吃什麼</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 50px; background: #f2f2f2; }
+    #reward-box {
+      font-size: 28px;
+      margin-top: 30px;
+      padding: 20px;
+      border: 3px dashed #4CAF50;
+      background: #fff;
+      border-radius: 15px;
+      min-height: 60px;
+      animation: none;
+    }
+    .animate {
+      animation: spin-pop 0.8s ease forwards;
+    }
+    @keyframes spin-pop {
+      0% { transform: rotate(0deg) scale(1); }
+      40% { transform: rotate(10deg) scale(1.3); }
+      70% { transform: rotate(-10deg) scale(1.2); }
+      100% { transform: rotate(0deg) scale(1); }
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background-color: #45a049; }
+    select {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    .youtube-promo, .orcid-section {
+      margin-top: 60px;
+      font-size: 18px;
+    }
+    .youtube-promo a, .orcid-section a {
+      color: #d90000;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    iframe {
+      margin-top: 20px;
+      border: none;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍽 每日中央大學吃什麼</h1>
+  <p>今天要吃哪裡？選擇地區後，按下「天選按此」！</p>
+
+  <select id="location-select">
+    <option value="campus">校內</option>
+    <option value="night">宵夜街</option>
+    <option value="back">後門</option>
+  </select>
+  <br>
+  <button onclick="spinFood()">天選按此</button>
+  <div id="reward-box"></div>
+
+  <div class="youtube-promo">
+    📺 想看更多學術與生活靈感？來我的頻道坐坐：<br>
+    <a href="https://www.youtube.com/@Billin888" target="_blank">@Billin888 - 點我訂閱 🔔</a>
+    <div>
+      <iframe width="360" height="215" src="https://www.youtube.com/embed?listType=user_uploads&list=Billin888" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <div class="orcid-section">
+    🧬 查看我的 ORCID 學術履歷：<br>
+    <a href="https://orcid.org/0000-0003-3299-1809" target="_blank">https://orcid.org/0000-0003-3299-1809</a>
+  </div>
+
+  <script>
+    const SHEET_ID = '1euvwDf1lE08u8viByS0g3rAULuM3JJHbN04740qywQQ';
+    const SHEET_NAME = '店家名單';
+    const API_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
+
+    let foodData = {};
+
+    fetch(API_URL)
+      .then(res => res.json())
+      .then(data => {
+        foodData = data.reduce((acc, row) => {
+          const loc = row['地區代碼（location）'];
+          const name = row['顯示名稱（店名）'];
+          if (!acc[loc]) acc[loc] = [];
+          acc[loc].push(name);
+          return acc;
+        }, {});
+      })
+      .catch(err => {
+        console.error('載入餐廳資料失敗：', err);
+      });
+
+    function speak(text) {
+      if ('speechSynthesis' in window) {
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'zh-TW';
+        msg.rate = 1.3;
+        window.speechSynthesis.speak(msg);
+      }
+    }
+
+    function spinFood() {
+      const location = document.getElementById('location-select').value;
+      const box = document.getElementById('reward-box');
+      const options = foodData[location] || [];
+      if (options.length === 0) {
+        box.textContent = "尚未載入餐點選項或此區沒有資料";
+        return;
+      }
+      box.textContent = "天選中... 🎲";
+      box.classList.remove('animate');
+
+      setTimeout(() => {
+        const selected = options[Math.floor(Math.random() * options.length)];
+        box.textContent = `🍽 今日推薦：${selected}`;
+        box.classList.add('animate');
+        speak(`今天推薦吃：${selected}`);
+      }, 1000);
+    }
+  </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1477776427047351"
+  crossorigin="anonymous"></script>
+</body>
+</html>

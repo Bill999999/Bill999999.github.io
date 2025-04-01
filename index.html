@@ -2,137 +2,143 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>每日中央大學吃什麼</title>
+  <title>中央大學生活新聞日誌</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 50px; background: #f2f2f2; }
-    #reward-box {
-      font-size: 28px;
-      margin-top: 30px;
+    body { font-family: sans-serif; background: #f9f9f9; color: #333; margin: 0; padding: 0; display: flex; }
+    header { background: #4CAF50; color: white; padding: 20px; text-align: center; }
+    nav {
+      width: 220px;
+      background: #2e7d32;
+      color: white;
+      height: 100vh;
+      padding: 20px 10px;
+      box-sizing: border-box;
+      position: fixed;
+      top: 0;
+      left: 0;
+    }
+    nav h2 { color: #fff; font-size: 18px; margin-bottom: 10px; }
+    nav a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      margin: 6px 0;
+      border-radius: 6px;
+    }
+    nav a:hover { background-color: #66bb6a; }
+    main {
+      margin-left: 240px;
+      max-width: 800px;
       padding: 20px;
-      border: 3px dashed #4CAF50;
-      background: #fff;
-      border-radius: 15px;
-      min-height: 60px;
-      animation: none;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      min-height: 100vh;
     }
-    .animate {
-      animation: spin-pop 0.8s ease forwards;
+    section { margin-bottom: 60px; }
+    article { margin-bottom: 30px; }
+    article h2 { color: #4CAF50; }
+    footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+      background: #eee;
     }
-    @keyframes spin-pop {
-      0% { transform: rotate(0deg) scale(1); }
-      40% { transform: rotate(10deg) scale(1.3); }
-      70% { transform: rotate(-10deg) scale(1.2); }
-      100% { transform: rotate(0deg) scale(1); }
-    }
-    button {
-      padding: 12px 24px;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
       background-color: #4CAF50;
       color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
       cursor: pointer;
+      display: none;
     }
-    button:hover { background-color: #45a049; }
-    select {
+    #searchBar {
+      margin-bottom: 20px;
       padding: 10px;
+      width: 100%;
       font-size: 16px;
       border-radius: 6px;
-      margin-bottom: 20px;
-    }
-    .youtube-promo, .orcid-section {
-      margin-top: 60px;
-      font-size: 18px;
-    }
-    .youtube-promo a, .orcid-section a {
-      color: #d90000;
-      font-weight: bold;
-      text-decoration: none;
-    }
-    iframe {
-      margin-top: 20px;
-      border: none;
-      border-radius: 12px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
-  <h1>🍽 每日中央大學吃什麼</h1>
-  <p>今天要吃哪裡？選擇地區後，按下「天選按此」！</p>
+  <nav>
+    <h2>功能選單</h2>
+    <a href="index.html">首頁</a>
+    <a href="hydrogen.html">最新氫能與燃料電池消息</a>
+    <a href="research.html">科研前沿</a>
+    <a href="paper.html">學術論文導讀</a>
+    <a href="life.html">生活動態</a>
+    <a href="links.html">常用連結</a>
+    <a href="food.html">今日中大吃什麼</a>
+  </nav>
 
-  <select id="location-select">
-    <option value="campus">校內</option>
-    <option value="night">宵夜街</option>
-    <option value="back">後門</option>
-  </select>
-  <br>
-  <button onclick="spinFood()">天選按此</button>
-  <div id="reward-box"></div>
+  <main>
+    <header>
+      <h1>中央大學生活新聞日誌</h1>
+      <p>每日一則，記錄生活中的觀察與世界的連結。</p>
+    </header>
 
-  <div class="youtube-promo">
-    📺 想看更多學術與生活靈感？來我的頻道坐坐：<br>
-    <a href="https://www.youtube.com/@Billin888" target="_blank">@Billin888 - 點我訂閱 🔔</a>
-    <div>
-      <iframe width="360" height="215" src="https://www.youtube.com/embed?listType=user_uploads&list=Billin888" allowfullscreen></iframe>
-    </div>
-  </div>
+    <input type="text" id="searchBar" placeholder="🔍 搜尋文章關鍵字..." onkeyup="searchArticles()">
 
-  <div class="orcid-section">
-    🧬 查看我的 ORCID 學術履歷：<br>
-    <a href="https://orcid.org/0000-0003-3299-1809" target="_blank">https://orcid.org/0000-0003-3299-1809</a>
-  </div>
+    <section id="latest-hydrogen">
+      <h2>📢 最新氫能與燃料電池消息</h2>
+      <article>
+        <h3>氫燃料巴士試運行上路</h3>
+        <p>中大與地方合作，導入首輛氫燃料電池公車，已於本週開始於校內試營運。</p>
+      </article>
+    </section>
+
+    <section id="latest-research">
+      <h2>🔬 科研前沿</h2>
+      <article>
+        <h3>新型鉑基催化劑突破提升效率</h3>
+        <p>中央大學材料系團隊發表於《Nature Energy》的研究，提出高穩定低成本催化解決方案。</p>
+      </article>
+    </section>
+
+    <section id="latest-paper">
+      <h2>📖 學術論文導讀</h2>
+      <article>
+        <h3>《Joule》：電解水新策略</h3>
+        <p>近期論文指出雙功能催化層對電解效率有重大提升，適用於PEM與AEM電解器。</p>
+      </article>
+    </section>
+
+    <section id="latest-life">
+      <h2>🌿 生活動態</h2>
+      <article>
+        <h3>校園春季散步小徑地圖</h3>
+        <p>設計了一條20分鐘的步行療癒路線，經過圖書館、湖畔與秘密綠蔭角落。</p>
+      </article>
+    </section>
+
+    <footer>
+      本站由 @Billin888 維運｜查看我的 <a href="https://orcid.org/0000-0003-3299-1809" target="_blank">ORCID</a> 與 <a href="https://www.youtube.com/@Billin888" target="_blank">YouTube 頻道</a>
+    </footer>
+  </main>
+
+  <button id="backToTop" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">↑ 回頂部</button>
 
   <script>
-    const SHEET_ID = '1euvwDf1lE08u8viByS0g3rAULuM3JJHbN04740qywQQ';
-    const SHEET_NAME = '店家名單';
-    const API_URL = `https://opensheet.elk.sh/${SHEET_ID}/${SHEET_NAME}`;
-
-    let foodData = {};
-
-    fetch(API_URL)
-      .then(res => res.json())
-      .then(data => {
-        foodData = data.reduce((acc, row) => {
-          const loc = row['地區代碼（location）'];
-          const name = row['顯示名稱（店名）'];
-          if (!acc[loc]) acc[loc] = [];
-          acc[loc].push(name);
-          return acc;
-        }, {});
-      })
-      .catch(err => {
-        console.error('載入餐廳資料失敗：', err);
+    const topBtn = document.getElementById('backToTop');
+    window.onscroll = () => {
+      topBtn.style.display = document.documentElement.scrollTop > 200 ? 'block' : 'none';
+    };
+    function searchArticles() {
+      const input = document.getElementById('searchBar').value.toLowerCase();
+      const articles = document.querySelectorAll('article');
+      articles.forEach(article => {
+        const text = article.textContent.toLowerCase();
+        article.style.display = text.includes(input) ? '' : 'none';
       });
-
-    function speak(text) {
-      if ('speechSynthesis' in window) {
-        const msg = new SpeechSynthesisUtterance(text);
-        msg.lang = 'zh-TW';
-        msg.rate = 1.3;
-        window.speechSynthesis.speak(msg);
-      }
-    }
-
-    function spinFood() {
-      const location = document.getElementById('location-select').value;
-      const box = document.getElementById('reward-box');
-      const options = foodData[location] || [];
-      if (options.length === 0) {
-        box.textContent = "尚未載入餐點選項或此區沒有資料";
-        return;
-      }
-      box.textContent = "天選中... 🎲";
-      box.classList.remove('animate');
-
-      setTimeout(() => {
-        const selected = options[Math.floor(Math.random() * options.length)];
-        box.textContent = `🍽 今日推薦：${selected}`;
-        box.classList.add('animate');
-        speak(`今天推薦吃：${selected}`);
-      }, 1000);
     }
   </script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1477776427047351"
-  crossorigin="anonymous"></script>
 </body>
 </html>
