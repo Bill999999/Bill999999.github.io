@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruit Box - Make 10</title>
+  <style>
+    :root {
+      --apple-size: 72px;
+      --apple-shadow: 0 12px 25px rgba(0, 0, 0, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(circle at top, #f9ecd8, #f7d5b1 45%, #f1b374);
+      color: #2f2a28;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    body.light-mode {
+      background: radial-gradient(circle at top, #ffffff, #f6f6f6 55%, #e7e7e7);
+      color: #1f1f1f;
+    }
+
+    .container {
+      width: min(960px, 100%);
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.12);
+      backdrop-filter: blur(6px);
+    }
+
+    body.light-mode .container {
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      letter-spacing: 1px;
+    }
+
+    p.subtitle {
+      margin: 0 0 20px;
+      font-size: 1.1rem;
+      color: rgba(47, 42, 40, 0.8);
+    }
+
+    body.light-mode p.subtitle {
+      color: rgba(31, 31, 31, 0.72);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .controls label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .controls input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #ff7a59;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #ff8a5b, #ff4c6a);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 12px 24px rgba(255, 99, 71, 0.35);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 30px rgba(255, 99, 71, 0.45);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .scoreboard {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      font-size: 1.05rem;
+      margin-bottom: 18px;
+      font-weight: 600;
+    }
+
+    .scoreboard span.value {
+      font-size: 1.35rem;
+      margin-left: 8px;
+      color: #d7385e;
+    }
+
+    body.light-mode .scoreboard span.value {
+      color: #c0392b;
+    }
+
+    #status {
+      min-height: 28px;
+      font-size: 1rem;
+      margin-bottom: 18px;
+      color: #5b4636;
+    }
+
+    body.light-mode #status {
+      color: #3c3c3c;
+    }
+
+    #game-area {
+      position: relative;
+      width: min(880px, 100%);
+      height: 520px;
+      margin: 0 auto;
+      border-radius: 28px;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.45), rgba(255, 203, 116, 0.5)),
+        linear-gradient(135deg, rgba(255, 166, 77, 0.95), rgba(255, 126, 64, 0.95));
+      box-shadow: inset 0 0 0 4px rgba(255, 255, 255, 0.4), 0 25px 40px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+      user-select: none;
+      touch-action: none;
+      outline: none;
+    }
+
+    body.light-mode #game-area {
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.65), rgba(255, 242, 186, 0.85)),
+        linear-gradient(135deg, rgba(255, 244, 200, 0.9), rgba(255, 220, 150, 0.85));
+      box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.6), 0 18px 28px rgba(0, 0, 0, 0.12);
+    }
+
+    .apple {
+      position: absolute;
+      width: var(--apple-size);
+      height: var(--apple-size);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.75), rgba(255, 82, 82, 0.9) 55%, rgba(185, 0, 56, 0.85));
+      box-shadow: var(--apple-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #fff8ec;
+      pointer-events: none;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .apple::before {
+      content: "";
+      position: absolute;
+      top: -12px;
+      width: 24px;
+      height: 18px;
+      background: #2f8f46;
+      border-radius: 14px 14px 0 0;
+      transform: rotate(-18deg);
+      filter: brightness(1.05);
+    }
+
+    .apple::after {
+      content: "";
+      position: absolute;
+      top: -18px;
+      left: calc(50% - 2px);
+      width: 4px;
+      height: 20px;
+      background: #5b3b1f;
+      border-radius: 99px;
+    }
+
+    .apple .number {
+      position: relative;
+      z-index: 1;
+    }
+
+    .apple.selected {
+      transform: scale(1.06);
+      filter: brightness(1.15);
+    }
+
+    body.light-mode .apple {
+      background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.85), rgba(255, 153, 102, 0.9) 60%, rgba(255, 112, 67, 0.9));
+      color: #fff4ec;
+      box-shadow: 0 10px 20px rgba(255, 153, 102, 0.3);
+    }
+
+    .selection-box {
+      position: absolute;
+      border: 2px dashed rgba(70, 130, 180, 0.9);
+      background: rgba(70, 130, 180, 0.2);
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    body.light-mode .selection-box {
+      border-color: rgba(109, 158, 235, 0.95);
+      background: rgba(109, 158, 235, 0.18);
+    }
+
+    .helper-text {
+      font-size: 0.95rem;
+      color: rgba(47, 42, 40, 0.65);
+      margin-top: 12px;
+    }
+
+    body.light-mode .helper-text {
+      color: rgba(31, 31, 31, 0.55);
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 18px 10px;
+        align-items: flex-start;
+      }
+
+      .container {
+        padding: 22px 18px;
+        border-radius: 22px;
+      }
+
+      #game-area {
+        height: 420px;
+        border-radius: 22px;
+      }
+
+      :root {
+        --apple-size: 64px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Fruit Box</h1>
+    <p class="subtitle">Drag the mouse to exactly enclose some apples so the numbers in the apples total 10. You get 1 point for each apple.</p>
+
+    <div class="controls">
+      <label>
+        <input type="checkbox" id="light-toggle"> Light Colors
+      </label>
+      <button id="reset-button" type="button">Reset Apples</button>
+    </div>
+
+    <div class="scoreboard" aria-live="polite">
+      <div>Score: <span id="score" class="value">0</span></div>
+      <div>Successful boxes: <span id="successes" class="value">0</span></div>
+      <div>Total selections: <span id="attempts" class="value">0</span></div>
+    </div>
+
+    <div id="status" aria-live="polite">Drag to make your first fruit box!</div>
+
+    <div id="game-area" tabindex="0" aria-label="Game area with apples"></div>
+
+    <p class="helper-text">Tip: The apples need to be fully inside your selection to count.</p>
+  </div>
+
+  <script>
+    (function () {
+      const APPLE_COUNT = 9;
+      const APPLE_SIZE = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--apple-size'), 10) || 72;
+      const gameArea = document.getElementById('game-area');
+      const scoreEl = document.getElementById('score');
+      const attemptsEl = document.getElementById('attempts');
+      const successesEl = document.getElementById('successes');
+      const statusEl = document.getElementById('status');
+      const lightToggle = document.getElementById('light-toggle');
+      const resetButton = document.getElementById('reset-button');
+
+      let apples = [];
+      let score = 0;
+      let attempts = 0;
+      let successes = 0;
+      let selectionBox = null;
+      let startPoint = null;
+      let currentPoint = null;
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function updateScoreboard() {
+        scoreEl.textContent = score.toString();
+        attemptsEl.textContent = attempts.toString();
+        successesEl.textContent = successes.toString();
+      }
+
+      function clearApples() {
+        apples.forEach(({ element }) => element.remove());
+        apples = [];
+      }
+
+      function isPositionFree(x, y) {
+        return apples.every((apple) => {
+          const dx = apple.x - x;
+          const dy = apple.y - y;
+          const distance = Math.hypot(dx, dy);
+          return distance > (APPLE_SIZE + 10);
+        });
+      }
+
+      function findPosition() {
+        const maxX = Math.max(0, gameArea.clientWidth - APPLE_SIZE);
+        const maxY = Math.max(0, gameArea.clientHeight - APPLE_SIZE);
+        let x = 0;
+        let y = 0;
+        let tries = 0;
+        do {
+          x = randomInt(0, maxX);
+          y = randomInt(0, maxY);
+          tries += 1;
+          if (tries > 60) {
+            break;
+          }
+        } while (!isPositionFree(x, y));
+        return { x, y };
+      }
+
+      function createApple(value) {
+        const appleValue = value ?? randomInt(1, 9);
+        const position = findPosition();
+        const apple = document.createElement('div');
+        apple.className = 'apple';
+        apple.style.left = `${position.x}px`;
+        apple.style.top = `${position.y}px`;
+        apple.dataset.value = String(appleValue);
+
+        const number = document.createElement('span');
+        number.className = 'number';
+        number.textContent = String(appleValue);
+        apple.appendChild(number);
+
+        gameArea.appendChild(apple);
+        apples.push({ value: appleValue, x: position.x, y: position.y, element: apple });
+      }
+
+      function hasTenCombo(values) {
+        const n = values.length;
+        const total = 1 << n;
+        for (let mask = 1; mask < total; mask += 1) {
+          let sum = 0;
+          for (let i = 0; i < n; i += 1) {
+            if (mask & (1 << i)) {
+              sum += values[i];
+            }
+          }
+          if (sum === 10) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      function ensureValidSet() {
+        const values = apples.map((apple) => apple.value);
+        if (values.length === 0) {
+          return;
+        }
+        if (hasTenCombo(values)) {
+          return;
+        }
+        const anchorValue = apples[0]?.value ?? randomInt(1, 9);
+        let needed = 10 - anchorValue;
+        if (needed < 1 || needed > 9) {
+          needed = 5;
+        }
+        const targetApple = apples[apples.length - 1];
+        targetApple.value = needed;
+        targetApple.element.dataset.value = String(needed);
+        targetApple.element.querySelector('.number').textContent = String(needed);
+      }
+
+      function spawnInitialApples() {
+        clearApples();
+        for (let i = 0; i < APPLE_COUNT; i += 1) {
+          createApple();
+        }
+        ensureValidSet();
+      }
+
+      function resetGame() {
+        score = 0;
+        attempts = 0;
+        successes = 0;
+        updateScoreboard();
+        statusEl.textContent = 'Apples refreshed! Try to make 10 by enclosing them.';
+        spawnInitialApples();
+      }
+
+      function clampPoint(point) {
+        return {
+          x: Math.min(Math.max(point.x, 0), gameArea.clientWidth),
+          y: Math.min(Math.max(point.y, 0), gameArea.clientHeight),
+        };
+      }
+
+      function updateSelectionBox(current) {
+        if (!selectionBox || !startPoint) {
+          return;
+        }
+        const clamped = clampPoint(current);
+        currentPoint = clamped;
+        const left = Math.min(startPoint.x, clamped.x);
+        const top = Math.min(startPoint.y, clamped.y);
+        const width = Math.abs(clamped.x - startPoint.x);
+        const height = Math.abs(clamped.y - startPoint.y);
+        selectionBox.style.left = `${left}px`;
+        selectionBox.style.top = `${top}px`;
+        selectionBox.style.width = `${width}px`;
+        selectionBox.style.height = `${height}px`;
+      }
+
+      function finishSelection() {
+        if (selectionBox) {
+          selectionBox.remove();
+          selectionBox = null;
+        }
+        if (!startPoint || !currentPoint) {
+          startPoint = null;
+          currentPoint = null;
+          return;
+        }
+        const width = Math.abs(currentPoint.x - startPoint.x);
+        const height = Math.abs(currentPoint.y - startPoint.y);
+        if (width < 8 || height < 8) {
+          startPoint = null;
+          currentPoint = null;
+          return;
+        }
+        const left = Math.min(startPoint.x, currentPoint.x);
+        const top = Math.min(startPoint.y, currentPoint.y);
+        const right = Math.max(startPoint.x, currentPoint.x);
+        const bottom = Math.max(startPoint.y, currentPoint.y);
+
+        const selected = apples.filter((apple) => {
+          const appleLeft = apple.x;
+          const appleTop = apple.y;
+          const appleRight = appleLeft + APPLE_SIZE;
+          const appleBottom = appleTop + APPLE_SIZE;
+          return appleLeft >= left && appleRight <= right && appleTop >= top && appleBottom <= bottom;
+        });
+
+        startPoint = null;
+        currentPoint = null;
+
+        if (selected.length === 0) {
+          statusEl.textContent = 'No apples were completely inside the box. Try again!';
+          return;
+        }
+
+        attempts += 1;
+        selected.forEach((apple) => apple.element.classList.add('selected'));
+        const total = selected.reduce((sum, apple) => sum + apple.value, 0);
+
+        if (total === 10) {
+          successes += 1;
+          score += selected.length;
+          statusEl.textContent = `Great! ${selected.length} apple${selected.length > 1 ? 's' : ''} add up to 10.`;
+          updateScoreboard();
+          setTimeout(() => {
+            selected.forEach((apple) => {
+              apple.element.remove();
+              const index = apples.indexOf(apple);
+              if (index >= 0) {
+                apples.splice(index, 1);
+              }
+            });
+            for (let i = 0; i < selected.length; i += 1) {
+              createApple();
+            }
+            ensureValidSet();
+          }, 220);
+        } else {
+          statusEl.textContent = `Close! Those apples add up to ${total}. You need 10.`;
+          setTimeout(() => {
+            selected.forEach((apple) => apple.element.classList.remove('selected'));
+          }, 220);
+          updateScoreboard();
+        }
+      }
+
+      function handlePointerDown(event) {
+        if (event.button !== undefined && event.button !== 0) {
+          return;
+        }
+        const rect = gameArea.getBoundingClientRect();
+        const start = {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        };
+        startPoint = clampPoint(start);
+        currentPoint = { ...startPoint };
+        selectionBox = document.createElement('div');
+        selectionBox.className = 'selection-box';
+        gameArea.appendChild(selectionBox);
+        updateSelectionBox(startPoint);
+        gameArea.setPointerCapture(event.pointerId);
+        gameArea.addEventListener('pointermove', handlePointerMove);
+        event.preventDefault();
+      }
+
+      function handlePointerMove(event) {
+        if (!startPoint) {
+          return;
+        }
+        const rect = gameArea.getBoundingClientRect();
+        const point = {
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        };
+        updateSelectionBox(point);
+      }
+
+      function handlePointerUp(event) {
+        if (gameArea.hasPointerCapture(event.pointerId)) {
+          gameArea.releasePointerCapture(event.pointerId);
+        }
+        gameArea.removeEventListener('pointermove', handlePointerMove);
+        finishSelection();
+      }
+
+      function setupEvents() {
+        gameArea.addEventListener('pointerdown', handlePointerDown);
+        gameArea.addEventListener('pointerup', handlePointerUp);
+        gameArea.addEventListener('lostpointercapture', () => {
+          gameArea.removeEventListener('pointermove', handlePointerMove);
+          if (selectionBox) {
+            selectionBox.remove();
+            selectionBox = null;
+          }
+          startPoint = null;
+          currentPoint = null;
+        });
+        lightToggle.addEventListener('change', () => {
+          document.body.classList.toggle('light-mode', lightToggle.checked);
+        });
+        resetButton.addEventListener('click', resetGame);
+        window.addEventListener('resize', () => {
+          // Rebuild apples to keep them inside resized area.
+          const previousValues = apples.map((apple) => apple.value);
+          spawnInitialApples();
+          // Keep previous values for familiarity while ensuring combos exist.
+          previousValues.forEach((value, index) => {
+            if (apples[index]) {
+              apples[index].value = value;
+              apples[index].element.dataset.value = String(value);
+              apples[index].element.querySelector('.number').textContent = String(value);
+            }
+          });
+          ensureValidSet();
+        });
+      }
+
+      setupEvents();
+      spawnInitialApples();
+      updateScoreboard();
+      statusEl.textContent = 'Drag a box around apples whose numbers total 10.';
+    })();
+  </script>
+</body>
+</html>
